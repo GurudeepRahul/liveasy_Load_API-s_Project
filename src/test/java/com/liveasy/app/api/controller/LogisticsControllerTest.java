@@ -46,7 +46,7 @@ class LogisticsControllerTest {
         List<Logistics> expectedLogisticsList = Arrays.asList(new Logistics(), new Logistics());
         when(logisticsService.getLoadsByShipperId(SHIPPER_ID)).thenReturn(expectedLogisticsList); // Mock the service
 
-        ResponseEntity<List<Logistics>> response = logisticsController.getLoadsByShipperId(SHIPPER_ID);
+        ResponseEntity<Object> response = logisticsController.getLoadsByShipperId(SHIPPER_ID);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(expectedLogisticsList, response.getBody());
@@ -57,7 +57,7 @@ class LogisticsControllerTest {
         Logistics expectedLogistics = new Logistics();
         when(logisticsService.getLoadById(LOAD_ID)).thenReturn(Optional.of(expectedLogistics)); // Mock the service
 
-        ResponseEntity<Logistics> response = logisticsController.getLoadById(LOAD_ID);
+        ResponseEntity<Object> response = logisticsController.getLoadById(LOAD_ID);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(expectedLogistics, response.getBody());
@@ -67,6 +67,7 @@ class LogisticsControllerTest {
     void testUpdateLoad() {
         Long loadId = 1L;
         Logistics updatedLogistics = new Logistics();
+        when(logisticsService.getLoadById(any())).thenReturn(Optional.of(updatedLogistics));
         doNothing().when(logisticsService).updateLoad(loadId, updatedLogistics); // Mock the service
 
         ResponseEntity<String> response = logisticsController.updateLoad(loadId, updatedLogistics);
@@ -77,6 +78,8 @@ class LogisticsControllerTest {
 
     @Test
     void testDeleteLoad() {
+        Logistics updatedLogistics = new Logistics();
+        when(logisticsService.getLoadById(any())).thenReturn(Optional.of(updatedLogistics));
         doNothing().when(logisticsService).deleteLoad(LOAD_ID);
 
         ResponseEntity<String> response = logisticsController.deleteLoad(LOAD_ID);
